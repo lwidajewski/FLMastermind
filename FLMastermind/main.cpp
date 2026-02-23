@@ -17,7 +17,7 @@ int main() {
 
 	// start game loop
 	while (!won && turnNum < maxAttempts) {
-		cout << "Attempt #" << turnNum + 1 << endl;
+		cout << "\nAttempt #" << turnNum + 1 << endl;
 
 		game.getPlayerGuess();
 		won = game.compareSequences();

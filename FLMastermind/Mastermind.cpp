@@ -3,16 +3,16 @@
 
 
 void Mastermind::printColors() {		//prints the possible colors for players to input
-	cout << "The colors are: \n";
-	cout << "R = Red\n";
-	cout << "G = Green\n";
-	cout << "B = Blue\n";
-	cout << "Y = Yellow\n";
-	cout << "U = Purple\n";
-	cout << "W = White\n";
-	cout << "L = Black\n";
-	cout << "O = Orange\n";
-	cout << "P = Pink\n";
+	cout << "The colors are: " << endl;
+	cout << "R = Red" << endl;
+	cout << "G = Green" << endl;
+	cout << "B = Blue" << endl;
+	cout << "Y = Yellow" << endl;
+	cout << "U = Purple" << endl;
+	cout << "W = White" << endl;
+	cout << "L = Black" << endl;
+	cout << "O = Orange" << endl;
+	cout << "P = Pink\n" << endl;
 };
 
 bool Mastermind::validateColor(char c) {
@@ -33,12 +33,12 @@ void Mastermind::makeSequence() {			//asks user to input a sequence
 
 	for (int i = 1; i <= 4; i++) {
 		// get user input
-		cout << "Player 1: enter color " << i << " of the code: ";
+		cout << "\nPlayer 1: enter color " << i << " of the code: ";
 		cin >> input;
 
 		// validate input
 		while (input.length() != 1 || !validateColor(toupper(input[0]))) {
-			cout << "Invalid input. Please enter a color (R,G,B,Y,U,W,L,O,P): ";
+			cout << "Invalid input. Please enter ONE color (R,G,B,Y,U,W,L,O,P): ";
 			cin >> input;
 		};
 
