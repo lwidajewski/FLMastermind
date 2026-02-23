@@ -27,6 +27,11 @@ void Mastermind::makeSequence() {			//asks user to input a sequence
 	system("pause");
 }
 
+// print out the code if player lost
+void Mastermind::printSecretCode() {
+	code.print();
+};
+
 void Mastermind::getPlayerGuess() {
 	char c;
 

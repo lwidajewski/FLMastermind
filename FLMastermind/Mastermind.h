@@ -10,6 +10,7 @@ class Mastermind
 public:
 	void printColors();
 	void makeSequence();
+	void printSecretCode();
 	void getPlayerGuess();
 	bool compareSequences();
 private:

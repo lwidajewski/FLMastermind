@@ -5,7 +5,6 @@ using namespace std;
 
 Sequence::Sequence() {
 	head = nullptr;
-	tail = nullptr;
 };
 
 bool Sequence::isEmpty() {
@@ -93,5 +92,4 @@ Sequence::~Sequence() {
 		current = next;
 	};
 	head = nullptr;
-	tail = nullptr;
 };
