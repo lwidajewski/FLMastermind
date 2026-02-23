@@ -80,8 +80,14 @@ void Sequence::insertAtStart(char c) {
 	head = temp;
 };
 
-void Sequence::insertInBetween(char c, int place) {
-
+void Sequence::clear() {
+	Node* current = head;
+	while (current != nullptr) {
+		Node* next = current->next;
+		delete current;
+		current = next;
+	};
+	head = nullptr;
 };
 
 Sequence::~Sequence() {

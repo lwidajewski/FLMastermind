@@ -3,48 +3,96 @@
 
 
 void Mastermind::printColors() {		//prints the possible colors for players to input
-	cout << "The colors are: 1,2,3,4,5,6,7,8,9" << endl;
-}
+	cout << "The colors are: \n";
+	cout << "R = Red\n";
+	cout << "G = Green\n";
+	cout << "B = Blue\n";
+	cout << "Y = Yellow\n";
+	cout << "U = Purple\n";
+	cout << "W = White\n";
+	cout << "L = Black\n";
+	cout << "O = Orange\n";
+	cout << "P = Pink\n";
+};
+
+bool Mastermind::validateColor(char c) {
+	// checks input to see if user entered a valid color
+	switch (c) {
+	case 'R': case 'G': case 'B': case 'Y': case 'U': case 'W': case 'L': case 'O': case 'P':
+		return true;
+	default:
+		return false;
+	};
+};
 
 void Mastermind::makeSequence() {			//asks user to input a sequence
-	char c;
+	string input;
 
-	cout << "Player 1: please input first color" << endl;
-	cin >> c;
-	code.insertAtStart(c);
-	cout << "Player 1: please input second color" << endl;
-	cin >> c;
-	code.insertAtEnd(c);
-	cout << "Player 1: please input third color" << endl;
-	cin >> c;
-	code.insertAtEnd(c);
-	cout << "Player 1: please input fourth color" << endl;
-	cin >> c;
-	code.insertAtEnd(c);
+	// clear the code list to put values in it (maybe in the future we add functionality to continue playing)
+	code.clear();
 
+	for (int i = 1; i <= 4; i++) {
+		// get user input
+		cout << "Player 1: enter color " << i << " of the code: ";
+		cin >> input;
+
+		// validate input
+		while (input.length() != 1 || !validateColor(toupper(input[0]))) {
+			cout << "Invalid input. Please enter a color (R,G,B,Y,U,W,L,O,P): ";
+			cin >> input;
+		};
+
+		// convert first character in string to uppercase
+		char c = toupper(input[0]);
+
+		// insert into code linkedlist
+		if (i == 1) {
+			code.insertAtStart(c);
+		}
+		else {
+			code.insertAtEnd(c);
+		};
+	};
+	// print out the initial secret code
 	cout << "The sequence is: ";
 	code.print();
 	system("pause");
-}
+};
 
-// print out the code if player lost
+// print out the secret code if player lost
 void Mastermind::printSecretCode() {
 	code.print();
 };
 
 void Mastermind::getPlayerGuess() {
-	char c;
+	string input;
 
-	// sets up an empty list to put the guesses in
-	// also clears any previous guesses that was in the list because of the destructor
-	guess = Sequence();
+	// clear the guess list to put more values in it
+	guess.clear();
 
 	for (int i = 1; i <= 4; i++) {
 		cout << "Player 2: enter color " << i << ": " << endl;
-		cin >> c;
-		guess.insertAtEnd(c);
+		cin >> input;
+
+		// input validation
+		while (input.length() != 1 || !validateColor(toupper(input[0]))) {
+			cout << "Invalid input. Please enter a color (R,G,B,Y,U,W,L,O,P): ";
+			cin >> input;
+		};
+
+		// convert first character in string to uppercase
+		char c = toupper(input[0]);
+
+		// insert player guess into linkedlist
+		if (i == 1) {
+			guess.insertAtStart(c);
+		}
+		else {
+			guess.insertAtEnd(c);
+		};
 	};
 
+	// print out the player's guess
 	cout << "Player 2's guess: ";
 	guess.print();
 };

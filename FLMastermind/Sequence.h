@@ -18,7 +18,7 @@ public:
 
 	void insertAtEnd(char c);
 	void insertAtStart(char c);
-	void insertInBetween(char c, int place);
+	void clear();
 
 	~Sequence();
 

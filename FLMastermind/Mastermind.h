@@ -9,6 +9,7 @@ class Mastermind
 {
 public:
 	void printColors();
+	bool validateColor(char c);
 	void makeSequence();
 	void printSecretCode();
 	void getPlayerGuess();
