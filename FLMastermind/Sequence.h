@@ -24,7 +24,6 @@ public:
 
 private:
 	Node* head;
-	Node* tail;
 };
 
 #endif
