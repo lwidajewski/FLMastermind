@@ -1,6 +1,66 @@
 #include "Mastermind.h"
 #include "Sequence.h"
 
+using namespace std;
+
+void Mastermind::gameChoice() {		//user chooses either the game or MastermindSolver
+	string choice;
+	cout << "Would you like to use Mastermind Solver or play?(S or P): ";
+	cin >> choice;
+	while (choice.length() != 1 || !choiceValidation(toupper(choice[0])))
+	{
+		cout << "Invalid Response: (S or P):";
+		cin >> choice;
+	}
+}
+
+bool Mastermind::choiceValidation(char c) {
+	switch (c) {
+	case 'S':
+		//temporary message
+		cout << "Under Development";
+		return true;
+		break;
+	case 'P':
+		gamePlay();
+		return true;
+		break;
+	default:
+		return false;
+	}
+}
+
+void Mastermind::gamePlay() {
+	int turnNum = 0;
+	int maxAttempts = 10;
+	bool won = false;
+
+
+	printColors();
+	makeSequence();
+
+	// start game loop
+	printColors();
+	while (!won && turnNum < maxAttempts) {
+		cout << "\nAttempt #" << turnNum + 1 << endl;
+
+		getPlayerGuess();
+		won = compareSequences();
+
+		turnNum++;
+	};
+
+	if (won) {
+		// player won print out win screen
+		cout << "\nYou have cracked the code and won!" << endl;
+	}
+	else {
+		// player lost via reaching max attempts
+		cout << "\nYou have lost! You've used all your attempts!" << endl;
+		// print out the secret code that was not guessed by the player
+		printSecretCode();
+	};
+}
 
 void Mastermind::printColors() {		//prints the possible colors for players to input
 	cout << "The colors are: " << endl;
@@ -56,7 +116,10 @@ void Mastermind::makeSequence() {			//asks user to input a sequence
 	// print out the initial secret code
 	cout << "The sequence is: ";
 	code.print();
+
+	//pauses program then clears console so player 2 can't see
 	system("pause");
+	system("CLS");
 };
 
 // print out the secret code if player lost

@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="FLMastermind/FLMastermind.vcxproj" />
+  <Project Path="FLMastermind/FLMastermind.vcxproj" Id="e1824563-0d6f-4014-b003-b3371da63ba1" />
 </Solution>
