@@ -3,7 +3,9 @@
 
 struct Node {
 	char color;
-	Node* next;
+	Node* next; //for sequence
+	Node* left; //for tree
+	Node* right; //for tree
 };
 
 class Sequence
