@@ -11,8 +11,8 @@ void Mastermind::gameChoice() {		//user chooses either the game or MastermindSol
 	{
 		cout << "Invalid Response: (S or P):";
 		cin >> choice;
-	}
-}
+	};
+};
 
 bool Mastermind::choiceValidation(char c) {
 	switch (c) {
@@ -27,8 +27,8 @@ bool Mastermind::choiceValidation(char c) {
 		break;
 	default:
 		return false;
-	}
-}
+	};
+};
 
 void Mastermind::gamePlay() {
 	int turnNum = 0;
@@ -60,7 +60,7 @@ void Mastermind::gamePlay() {
 		// print out the secret code that was not guessed by the player
 		printSecretCode();
 	};
-}
+};
 
 void Mastermind::printColors() {		//prints the possible colors for players to input
 	cout << "The colors are: " << endl;

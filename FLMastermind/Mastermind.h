@@ -2,9 +2,12 @@
 #define MASTERMIND_H
 
 #include <iostream>
+
 #include "Sequence.h"
+#include "Solver.h"
 
 using namespace std;
+
 class Mastermind
 {
 public:
