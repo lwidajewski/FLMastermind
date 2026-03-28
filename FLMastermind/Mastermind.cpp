@@ -1,5 +1,6 @@
 #include "Mastermind.h"
 #include "Sequence.h"
+#include "Solver.h"
 
 using namespace std;
 
@@ -18,7 +19,8 @@ bool Mastermind::choiceValidation(char c) {
 	switch (c) {
 	case 'S':
 		//temporary message
-		cout << "Under Development";
+		//cout << "Under Development";
+		solver();
 		return true;
 		break;
 	case 'P':
@@ -28,6 +30,11 @@ bool Mastermind::choiceValidation(char c) {
 	default:
 		return false;
 	};
+};
+
+void Mastermind::solver() {
+	Solver solve;
+	solve.solve();
 };
 
 void Mastermind::gamePlay() {
@@ -69,16 +76,13 @@ void Mastermind::printColors() {		//prints the possible colors for players to in
 	cout << "B = Blue" << endl;
 	cout << "Y = Yellow" << endl;
 	cout << "U = Purple" << endl;
-	cout << "W = White" << endl;
-	cout << "L = Black" << endl;
 	cout << "O = Orange" << endl;
-	cout << "P = Pink\n" << endl;
 };
 
 bool Mastermind::validateColor(char c) {
 	// checks input to see if user entered a valid color
 	switch (c) {
-	case 'R': case 'G': case 'B': case 'Y': case 'U': case 'W': case 'L': case 'O': case 'P':
+	case 'R': case 'G': case 'B': case 'Y': case 'U': case 'O':
 		return true;
 	default:
 		return false;
@@ -98,7 +102,7 @@ void Mastermind::makeSequence() {			//asks user to input a sequence
 
 		// validate input
 		while (input.length() != 1 || !validateColor(toupper(input[0]))) {
-			cout << "Invalid input. Please enter ONE color (R,G,B,Y,U,W,L,O,P): ";
+			cout << "Invalid input. Please enter ONE color (R,G,B,Y,U,W,L,O): ";
 			cin >> input;
 		};
 
@@ -139,7 +143,7 @@ void Mastermind::getPlayerGuess() {
 
 		// input validation
 		while (input.length() != 1 || !validateColor(toupper(input[0]))) {
-			cout << "Invalid input. Please enter a color (R,G,B,Y,U,W,L,O,P): ";
+			cout << "Invalid input. Please enter a color (R,G,B,Y,U,W,L,O): ";
 			cin >> input;
 		};
 
