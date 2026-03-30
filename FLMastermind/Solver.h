@@ -24,8 +24,10 @@ class Solver {
 		// builds vectors that are stored in a vector-->called buckets here (vectorception)
 		void buildBuckets(const string& guess, Vector<string>& remaining, Vector<GuessFeedback>& seenFBs, Vector<Vector<string>>& buckets);
 
+		// greedy approach implementation --> see solver.cpp for more explanation
 		std::string	greedyPick(Vector<std::string>& remaining);
 
+		// builds the tree --> tree is built after the first guess
 		TreeNode* buildTree(Vector<std::string>& remaining, int depth);
 
 	public:
