@@ -30,9 +30,17 @@ class Solver {
 		// builds the tree --> tree is built after the first guess
 		TreeNode* buildTree(Vector<std::string>& remaining, int depth);
 
+
+		// --- testing stuff ---
+		void testGetFeedback();
+		void testGenerateCodes();
+
 	public:
 		Solver();
 		void solve(); // used in Mastermind.cpp (kind of like the UI function for the solver)
+
+		// for testing --> called in Mastermind.cpp
+		void test();
 };
 
 #endif

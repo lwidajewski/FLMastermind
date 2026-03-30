@@ -12,6 +12,7 @@ class Mastermind
 {
 public:
 	void gameChoice();
+	void test(); // testing purposes
 	void solver();
 	void gamePlay();
 	void printColors();

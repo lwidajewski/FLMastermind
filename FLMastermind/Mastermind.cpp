@@ -6,11 +6,11 @@ using namespace std;
 
 void Mastermind::gameChoice() {		//user chooses either the game or MastermindSolver
 	string choice;
-	cout << "Would you like to use Mastermind Solver or play?(S or P): ";
+	cout << "Would you like to use Mastermind Solver, play, or see tests?(S, P, or T): ";
 	cin >> choice;
 	while (choice.length() != 1 || !choiceValidation(toupper(choice[0])))
 	{
-		cout << "Invalid Response: (S or P):";
+		cout << "Invalid Response: (S, P, or T):";
 		cin >> choice;
 	};
 };
@@ -27,10 +27,19 @@ bool Mastermind::choiceValidation(char c) {
 		gamePlay();
 		return true;
 		break;
+	case 'T':
+		test();
+		return true;
+		break;
 	default:
 		return false;
 	};
 };
+
+void Mastermind::test() {
+	Solver test;
+	test.test();
+}
 
 void Mastermind::solver() {
 	Solver solve;
