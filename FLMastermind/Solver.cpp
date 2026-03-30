@@ -254,3 +254,65 @@ void Solver::solve() {
 
 	cout << "No moves available." << endl;
 };
+
+
+// ---------- testing ----------
+void Solver::test() {
+	//testGetFeedback();
+	//testGenerateCodes();
+};
+
+// yes I inputted codes manually to check
+void Solver::testGetFeedback() {
+	GuessFeedback fb;
+
+	for (int i = 0; i < 15; i++) {
+		string guess = "";
+		string answer = "";
+
+		cout << "\nEnter guess code: ";
+		cin >> guess;
+		cout << "Enter answer code: ";
+		cin >> answer;
+		fb = getFeedback(guess, answer);
+
+		cout << "Exact: " << fb.exact << " Partial: " << fb.partial;
+	};
+};
+
+// testing 1296 codes
+void Solver::testGenerateCodes() {
+	cout << "Generate codes creates 1296 codes. Total: " << allCodes.size() << endl;
+
+	cout << "First code is RRRR, index 0: " << allCodes.at(0) << endl;
+
+	cout << "Last code is OOOO, index 1295: " << allCodes.at(1295) << endl;
+
+	bool isLength4 = true;
+	for (int i = 0; i < allCodes.size(); i++) {
+		if (allCodes.at(i).length() != 4) {
+			isLength4 = false;
+		};
+	};
+	if (isLength4 == true) {
+		cout << "All codes are length of 4" << endl;
+	}
+	else {
+		cout << "Not every code is length 4" << endl;
+	};
+
+	bool noDups = true;
+	for (int i = 0; i < allCodes.size(); i++) {
+		for (int j = i + 1; j < allCodes.size(); j++) {
+			if (allCodes.at(i) == allCodes.at(j)) {
+				bool noDups = false;
+			};
+		};
+	};
+	if (noDups == true) {
+		cout << "No duplicates" << endl;
+	}
+	else {
+		cout << "There are duplicates" << endl;
+	};
+};
