@@ -5,16 +5,19 @@
 
 
 // ---------- GuessFeedback Struct ----------
+// constructor
 GuessFeedback::GuessFeedback() {
 	exact = 0;
 	partial = 0;
 };
 
+// constructor for when matches are passed in
 GuessFeedback::GuessFeedback(int e, int p) {
 	exact = e;
 	partial = p;
 };
 
+// checks if GuessFeedback has the same exact/partial matches as another GuessFeedback
 bool GuessFeedback::isEqual(const GuessFeedback& other) const {
 	if (exact == other.exact && partial == other.partial) {
 		return true;
@@ -25,8 +28,10 @@ bool GuessFeedback::isEqual(const GuessFeedback& other) const {
 };
 
 // ---------- TreeNode Struct ----------
+// constructor
 TreeNode::TreeNode() : remaining(1296), children(14) {};
 
+// destructor
 TreeNode::~TreeNode() {
 	for (int i = 0; i < children.size(); i++) {
 		delete children.at(i);
@@ -34,10 +39,12 @@ TreeNode::~TreeNode() {
 };
 
 // ---------- Tree Functions ----------
+// constructor
 Tree::Tree() {
 	root = nullptr;
 };
 
+// checks if tree is empty or not
 bool Tree::isEmpty() {
 	if (root == nullptr) {
 		return true;
@@ -47,10 +54,12 @@ bool Tree::isEmpty() {
 	};
 };
 
+// get the root node
 TreeNode* Tree::getRoot() {
 	return root;
 };
 
+// set the root node
 void Tree::setRoot(TreeNode* node) {
 	if (!isEmpty()) {
 		delete root;
@@ -58,6 +67,7 @@ void Tree::setRoot(TreeNode* node) {
 	root = node;
 };
 
+// destructor
 Tree::~Tree() {
 	delete root;
 };

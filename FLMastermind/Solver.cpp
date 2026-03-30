@@ -183,33 +183,36 @@ void Solver::solve() {
 	string firstGuess = "RRGG";
 	cout << "Move 1 - My guess: " << firstGuess << endl;
 
+	// receive feedback from user about how many exact and partial matches there are
 	int exact, partial;
 	cout << "Enter exact matches: ";
 	cin >> exact;
 	cout << "Enter partial matches: ";
 	cin >> partial;
 
+	// check if everything was exact --> if it was the code was solved
 	if (exact == length) {
 		cout << "\nSolved! The code was " << firstGuess << "!" << endl;
 		return;
-	}
+	};
 
 	// filter remaining based on first guess feedback
 	Vector<string> filtered;
 	for (int i = 0; i < remaining.size(); i++) {
 		if (getFeedback(firstGuess, remaining.at(i)).isEqual(GuessFeedback(exact, partial))) {
 			filtered.push_back(remaining.at(i));
-		}
-	}
+		};
+	};
 	remaining = filtered;
 	cout << "Remaining codes after filter: " << remaining.size() << endl;
 
+	// error if there was a misinput
 	if (remaining.size() == 0) {
 		cout << "No remaining codes match feedback. Check input." << endl;
 		return;
-	}
+	};
 
-	// build tree with reduced remaining codes after first guess
+	// build tree with remaining codes after first guess
 	cout << "Building decision tree..." << endl;
 	TreeNode* root = buildTree(remaining, length);
 	tree.setRoot(root);
@@ -219,6 +222,7 @@ void Solver::solve() {
 	TreeNode* current = tree.getRoot();
 	int moveCount = 2;
 
+	// main loop
 	while (current != nullptr) {
 		cout << "Move " << moveCount++ << " - My guess: " << current->guess << endl;
 
@@ -230,23 +234,23 @@ void Solver::solve() {
 		if (exact == length) {
 			cout << "\nSolved! The code was " << current->guess << "!" << endl;
 			return;
-		}
+		};
 
 		TreeNode* next = nullptr;
 		for (int i = 0; i < current->children.size(); i++) {
 			if (current->children.at(i)->feedback.isEqual(GuessFeedback(exact, partial))) {
 				next = current->children.at(i);
 				break;
-			}
-		}
+			};
+		};
 
 		if (next == nullptr) {
 			cout << "No matching path in tree. Check input." << endl;
 			return;
-		}
+		};
 
 		current = next;
-	}
+	};
 
 	cout << "No moves available." << endl;
-}
+};

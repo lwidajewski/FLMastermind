@@ -15,6 +15,7 @@ template <typename T> class Vector {
 			capacity = 1296; // total # of combinations of colors there can be
 			data = new T[capacity];
 		};
+		// constructor if capacity was passed in at the same time
 		Vector(int cap) {
 			sz = 0;
 			capacity = cap;
@@ -29,6 +30,7 @@ template <typename T> class Vector {
 				data[i] = other.data[i];
 		};
 
+		// helps with assigning vectors to vectors
 		Vector& operator=(const Vector& other) {
 			if (this != &other) {
 				delete[] data;
