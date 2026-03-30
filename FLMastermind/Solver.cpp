@@ -175,7 +175,7 @@ TreeNode* Solver::buildTree(Vector<string>& remaining, int depth) {
 // more of an interactive solve than I intended but I kind of like it
 void Solver::solve() {
 	cout << "\n--- Mastermind Solver ---" << endl;
-	cout << "Think of a secret code using these colors: R G B Y U W" << endl;
+	cout << "Think of a secret code using these colors: R G B Y U O" << endl;
 
 	Vector<string> remaining = allCodes;
 
