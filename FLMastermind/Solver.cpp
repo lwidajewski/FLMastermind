@@ -258,8 +258,11 @@ void Solver::solve() {
 
 // ---------- testing ----------
 void Solver::test() {
+	cout << "Solver tests" << endl;
+	cout << "------------------------" << endl;
 	//testGetFeedback();
 	//testGenerateCodes();
+	system("pause");
 };
 
 // yes I inputted codes manually to check

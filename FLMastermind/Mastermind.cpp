@@ -5,13 +5,24 @@
 using namespace std;
 
 void Mastermind::gameChoice() {		//user chooses either the game or MastermindSolver
+	system("CLS");
 	string choice;
-	cout << "Would you like to use Mastermind Solver, play, or see tests?(S, P, or T): ";
+	cout << "\nFinn and Leo's Mastermind Game" << endl;
+	cout << "-----------------------------------------------------------------------" << endl << endl;
+	cout << "What would you like to do?: " << endl;
+	cout << "S: Mastermind Solver" << endl;
+	cout << "P: Play Mastermind" << endl;
+	cout << "T: Testing Purposes" << endl;
+	cout << "Q: Quit" << endl << endl;
+	cout << "Choice (S, P, T, or Q): ";
 	cin >> choice;
 	while (choice.length() != 1 || !choiceValidation(toupper(choice[0])))
 	{
-		cout << "Invalid Response: (S, P, or T):";
+		cout << "Invalid Response: (S, P, T, or Q):";
 		cin >> choice;
+	};
+	if (toupper(choice[0]) == 'Q') {
+		cout << "\nThanks for Playing!" << endl;
 	};
 };
 
@@ -31,6 +42,9 @@ bool Mastermind::choiceValidation(char c) {
 		test();
 		return true;
 		break;
+	case 'Q':
+		return true;
+		break;
 	default:
 		return false;
 	};
@@ -38,12 +52,16 @@ bool Mastermind::choiceValidation(char c) {
 
 void Mastermind::test() {
 	Solver test;
+	system("CLS");
 	test.test();
+	gameChoice();
 }
 
 void Mastermind::solver() {
 	Solver solve;
+	system("CLS");
 	solve.solve();
+	gameChoice();
 };
 
 void Mastermind::gamePlay() {
@@ -51,6 +69,8 @@ void Mastermind::gamePlay() {
 	int maxAttempts = 10;
 	bool won = false;
 
+	// menu for playing mastermind
+	cout << "\n--- Mastermind Game ---" << endl;
 
 	printColors();
 	makeSequence();
@@ -69,12 +89,16 @@ void Mastermind::gamePlay() {
 	if (won) {
 		// player won print out win screen
 		cout << "\nYou have cracked the code and won!" << endl;
+		system("pause");
+		gameChoice();
 	}
 	else {
 		// player lost via reaching max attempts
 		cout << "\nYou have lost! You've used all your attempts!" << endl;
 		// print out the secret code that was not guessed by the player
 		printSecretCode();
+		system("pause");
+		gameChoice();
 	};
 };
 
@@ -137,6 +161,7 @@ void Mastermind::makeSequence() {			//asks user to input a sequence
 
 // print out the secret code if player lost
 void Mastermind::printSecretCode() {
+	cout << "The code was: ";
 	code.print();
 };
 
@@ -147,8 +172,9 @@ void Mastermind::getPlayerGuess() {
 	guess.clear();
 
 	for (int i = 1; i <= 4; i++) {
-		cout << "Player 2: enter color " << i << ": " << endl;
+		cout << "Player 2: enter color " << i << ": ";
 		cin >> input;
+		cout << endl;
 
 		// input validation
 		while (input.length() != 1 || !validateColor(toupper(input[0]))) {
