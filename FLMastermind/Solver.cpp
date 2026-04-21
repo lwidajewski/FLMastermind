@@ -442,7 +442,7 @@ void Solver::test() {
 	cout << "------------------------" << endl;
 	//testGetFeedback();
 	//testGenerateCodes();
-	testBacktracking();
+	//testBacktracking();
 	system("pause");
 };
 
@@ -502,7 +502,7 @@ void Solver::testGenerateCodes() {
 };
 
 void Solver::testBacktracking() {
-	/*cout << "\n--- Backtracking Tests --- " << endl;
+	cout << "\n--- Backtracking Tests --- " << endl;
 
 
 	// testing small remaining number of codes with backtracking
@@ -643,7 +643,7 @@ void Solver::testBacktracking() {
 	delete btNode7;
 
 
-	   ----- Commented out cause it can take awhile just in case this function gets uncommented later
+	/*   ----- Commented out cause it can take awhile just in case this function gets uncommented later
 	// tested if backtracking can handle a larger input size close to its max
 	Vector<string> medium;
 
@@ -662,23 +662,4 @@ void Solver::testBacktracking() {
 	};
 	delete btNode8;
 	*/
-
-
-	Vector<string> demo;
-	demo.push_back("RRBB");
-	demo.push_back("RRBO");
-	demo.push_back("RRBY");
-	demo.push_back("RRBU");
-	demo.push_back("RRBG");
-	demo.push_back("RRBR");
-
-	TreeNode* greedyNode = buildTree(demo, lengthOfCode);
-	int greedyDepth = maxDepth(greedyNode);
-
-	TreeNode* btNode = new TreeNode();
-	backTrack(btNode, demo, lengthOfCode);
-	int btDepth = maxDepth(btNode);
-
-	cout << "Greedy depth: " << greedyDepth << endl;
-	cout << "Backtracking depth: " << btDepth << endl;
 };
