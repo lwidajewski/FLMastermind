@@ -134,6 +134,7 @@ string Solver::greedyPick(Vector<string>& remaining) {
 	return best;
 };
 
+// returns depth of decision tree
 int Solver::maxDepth(TreeNode* node) {
 	// early return cases
 	if (node == nullptr) {
@@ -144,41 +145,53 @@ int Solver::maxDepth(TreeNode* node) {
 	};
 
 	int deepest = 0;
+
+	// recursively find the deepest child
 	for (int i = 0; i < node->children.size(); i++) {
 		int childDepth = maxDepth(node->children.at(i));
 		if (childDepth > deepest) {
 			deepest = childDepth;
 		};
 	};
-	return deepest + 1;
+	return deepest + 1; // add 1 to include current node
 };
 
+// check if current strategy (mainly greedy) is good enough
 bool Solver::isOptimal(TreeNode* node, int depthLimit) {
+	// tree is empty (early return)
 	if (node == nullptr) {
 		return true;
 	};
+
+	// if we reached depthLimit but still have more children this would not be optimal
 	if (depthLimit == 0 && node->children.size() > 0) {
 		return false;
 	};
 
+	// recursively checks all children
 	for (int i = 0; i < node->children.size(); i++) {
 		if (!isOptimal(node->children.at(i), depthLimit - 1)) {
 			return false;
 		};
 	};
+
 	return true;
 };
 
+
+// ---------- Main Backtracking Function ----------
 bool Solver::backTrack(TreeNode* node, Vector<std::string>& remaining, int depth) {
 	// early return cases
-	if (remaining.size() == 0) {
+	if (remaining.size() == 0) { // no possible codes remaining
 		return false;
 	};
-	if (remaining.size() == 1) {
+
+	if (remaining.size() == 1) { // only one code left
 		node->guess = remaining.at(0);
 		return true;
 	};
-	if (depth == 0) {
+
+	if (depth == 0) { // depth limit was reached
 		return false;
 	};
 
@@ -186,17 +199,22 @@ bool Solver::backTrack(TreeNode* node, Vector<std::string>& remaining, int depth
 		string candidate = remaining.at(i);
 		node->guess = candidate;
 
+		// split codes into buckets, kind of what we did in greedy
 		Vector<GuessFeedback> fbs(14);
 		Vector<Vector<string>> buckets(14);
 		buildBuckets(candidate, remaining, fbs, buckets);
 
 		bool success = true;
 
+		// check each possible feedback
 		for (int j = 0; j < fbs.size(); j++) {
+
+			// all positions are correct (skip)
 			if (fbs.at(j).exact == lengthOfCode) {
 				continue;
 			};
 
+			// pruning, abandon a guess that does not reduce the search
 			if (buckets.at(j).size() == remaining.size()) {
 				success = false;
 				break;
@@ -205,25 +223,30 @@ bool Solver::backTrack(TreeNode* node, Vector<std::string>& remaining, int depth
 			TreeNode* child = new TreeNode;
 			child->feedback = fbs.at(j);
 
+			// recursively solve
 			if (!backTrack(child, buckets.at(j), depth - 1)) {
 				success = false;
 				delete child;
 				break;
 			};
+
+			// store successful branch
 			node->children.push_back(child);
 		};
 
+		// if branches succeed it was a valid strategy
 		if (success) {
 			return true;
 		};
 
+		// undo all children created for this candidate
 		for (int j = 0; j < node->children.size(); j++) {
 			delete node->children.at(j);
 		};
 
 		node->children.clear();
 	};
-	return false;
+	return false; // failed case
 };
 
 // ---------- Build Decision Tree ----------
@@ -350,6 +373,7 @@ void Solver::solve() {
 		cout << "Enter partial matches: ";
 		partial = intInputCheck(0, 4);
 
+		// special case where user entered matches wrong and ended up solving without realizing
 		if (exact == lengthOfCode || exact == 3 && partial == 1) {
 			if (partial == 1) {
 				cout << "\nThe combination of 3 exact and 1 partial matches mean the code was solved!" << endl;
@@ -359,6 +383,7 @@ void Solver::solve() {
 			return;
 		};
 
+		// find correct part of the tree to go down based on the feedback from user
 		TreeNode* next = nullptr;
 		for (int i = 0; i < current->children.size(); i++) {
 			if (current->children.at(i)->feedback.isEqual(GuessFeedback(exact, partial))) {
@@ -367,6 +392,7 @@ void Solver::solve() {
 			};
 		};
 
+		// runs basically if there was user input error
 		if (next == nullptr) {
 			cout << "No matching path in tree. Check input." << endl;
 			system("pause");
@@ -401,8 +427,8 @@ void Solver::solve() {
 			};
 		};
 	};
+	cout << "No moves available." << endl; // solver completely failed
 	system("pause");
-	cout << "No moves available." << endl;
 };
 
 
