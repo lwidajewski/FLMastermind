@@ -134,6 +134,121 @@ string Solver::greedyPick(Vector<string>& remaining) {
 	return best;
 };
 
+// returns depth of decision tree
+int Solver::maxDepth(TreeNode* node) {
+	// early return cases
+	if (node == nullptr) {
+		return 0;
+	};
+	if (node->children.size() == 0) {
+		return 1;
+	};
+
+	int deepest = 0;
+
+	// recursively find the deepest child
+	for (int i = 0; i < node->children.size(); i++) {
+		int childDepth = maxDepth(node->children.at(i));
+		if (childDepth > deepest) {
+			deepest = childDepth;
+		};
+	};
+	return deepest + 1; // add 1 to include current node
+};
+
+// check if current strategy (mainly greedy) is good enough
+bool Solver::isOptimal(TreeNode* node, int depthLimit) {
+	// tree is empty (early return)
+	if (node == nullptr) {
+		return true;
+	};
+
+	// if we reached depthLimit but still have more children this would not be optimal
+	if (depthLimit == 0 && node->children.size() > 0) {
+		return false;
+	};
+
+	// recursively checks all children
+	for (int i = 0; i < node->children.size(); i++) {
+		if (!isOptimal(node->children.at(i), depthLimit - 1)) {
+			return false;
+		};
+	};
+
+	return true;
+};
+
+
+// ---------- Main Backtracking Function ----------
+bool Solver::backTrack(TreeNode* node, Vector<std::string>& remaining, int depth) {
+	// early return cases
+	if (remaining.size() == 0) { // no possible codes remaining
+		return false;
+	};
+
+	if (remaining.size() == 1) { // only one code left
+		node->guess = remaining.at(0);
+		return true;
+	};
+
+	if (depth == 0) { // depth limit was reached
+		return false;
+	};
+
+	for (int i = 0; i < remaining.size(); i++) {
+		string candidate = remaining.at(i);
+		node->guess = candidate;
+
+		// split codes into buckets, kind of what we did in greedy
+		Vector<GuessFeedback> fbs(14);
+		Vector<Vector<string>> buckets(14);
+		buildBuckets(candidate, remaining, fbs, buckets);
+
+		bool success = true;
+
+		// check each possible feedback
+		for (int j = 0; j < fbs.size(); j++) {
+
+			// all positions are correct (skip)
+			if (fbs.at(j).exact == lengthOfCode) {
+				continue;
+			};
+
+			// pruning, abandon a guess that does not reduce the search
+			if (buckets.at(j).size() == remaining.size()) {
+				success = false;
+				break;
+			}
+
+			TreeNode* child = new TreeNode;
+			child->feedback = fbs.at(j);
+
+			// recursively solve
+			if (!backTrack(child, buckets.at(j), depth - 1)) {
+				success = false;
+				delete child;
+				break;
+			};
+
+			// store successful branch
+			node->children.push_back(child);
+		};
+
+		// if branches succeed it was a valid strategy
+		if (success) {
+			return true;
+		};
+
+		// undo all children created for this candidate
+		for (int j = 0; j < node->children.size(); j++) {
+			delete node->children.at(j);
+		};
+
+		node->children.clear();
+	};
+	return false; // failed case
+};
+
 // ---------- Build Decision Tree ----------
 // one parent can have multiple children (more than 2) --> this is because one guess can produce several different feedbacks
 TreeNode* Solver::buildTree(Vector<string>& remaining, int depth) {
@@ -200,6 +315,7 @@ void Solver::solve() {
 	cout << "Think of a secret code using these colors: R G B Y U O" << endl;
 
 	Vector<string> remaining = allCodes;
+	const int btLimit = 50;
 
 	// make fixed first guess before building tree
 	string firstGuess = "RRGG";
@@ -239,10 +355,10 @@ void Solver::solve() {
 	};
 
 	// build tree with remaining codes after first guess
-	cout << "Building decision tree..." << endl;
+	cout << "\nBuilding greedy tree..." << endl;
 	TreeNode* root = buildTree(remaining, lengthOfCode);
 	tree.setRoot(root);
-	cout << "Tree built! Let's solve." << endl;
+	cout << "Greedy tree built. Worst case moves: " << maxDepth(root) + 2 << endl << endl;
 
 	// navigate tree for remaining guesses
 	TreeNode* current = tree.getRoot();
@@ -257,6 +373,7 @@ void Solver::solve() {
 		cout << "Enter partial matches: ";
 		partial = intInputCheck(0, 4);
 
+		// special case where user entered matches wrong and ended up solving without realizing
 		if (exact == lengthOfCode || exact == 3 && partial == 1) {
 			if (partial == 1) {
 				cout << "\nThe combination of 3 exact and 1 partial matches mean the code was solved!" << endl;
@@ -266,6 +383,7 @@ void Solver::solve() {
 			return;
 		};
 
+		// find correct part of the tree to go down based on the feedback from user
 		TreeNode* next = nullptr;
 		for (int i = 0; i < current->children.size(); i++) {
 			if (current->children.at(i)->feedback.isEqual(GuessFeedback(exact, partial))) {
@@ -274,15 +392,43 @@ void Solver::solve() {
 			};
 		};
 
+		// runs basically if there was user input error
 		if (next == nullptr) {
 			cout << "No matching path in tree. Check input." << endl;
+			system("pause");
 			return;
 		};
 
 		current = next;
-	};
+		cout << "Current remaining codes: " << current->remaining.size() << endl;
 
-	cout << "No moves available." << endl;
+		// recheck with backtracking at each step -- maybe it will actually be better at some point
+		// this is because remaining codes shrinks each time and otherwise it would take like 20+ minutes to trigger
+		if (current != nullptr && !isOptimal(current, lengthOfCode - 2)) {
+			if (current->remaining.size() <= btLimit) {
+				cout << "Checking with backtracking..." << endl;
+				int currDepth = maxDepth(current);
+				TreeNode* btNode = new TreeNode();
+				if (backTrack(btNode, current->remaining, lengthOfCode)) {
+					int btDepth = maxDepth(btNode);
+					if (btDepth < currDepth) {
+						cout << "Backtracking improved subtree. Worst case moves: " << btDepth << endl;
+						btNode->feedback = current->feedback;
+						current = btNode;
+					}
+					else {
+						cout << "Backtracking did not improve. Using Greedy." << endl;
+						delete btNode;
+					};
+				}
+				else {
+					delete btNode;
+				};
+			};
+		};
+	};
+	cout << "No moves available." << endl; // solver completely failed
+	system("pause");
 };
 
 
@@ -292,6 +438,7 @@ void Solver::test() {
 	cout << "------------------------" << endl;
 	//testGetFeedback();
 	//testGenerateCodes();
+	testBacktracking();
 	system("pause");
 };
 
@@ -338,7 +485,7 @@ void Solver::testGenerateCodes() {
 	for (int i = 0; i < allCodes.size(); i++) {
 		for (int j = i + 1; j < allCodes.size(); j++) {
 			if (allCodes.at(i) == allCodes.at(j)) {
-				bool noDups = false;
+				noDups = false;
 			};
 		};
 	};
@@ -348,4 +495,80 @@ void Solver::testGenerateCodes() {
 	else {
 		cout << "There are duplicates" << endl;
 	};
+};
+
+void Solver::testBacktracking() {
+	cout << "\n--- Backtracking Tests --- " << endl;
+
+
+	// testing small remaining number of codes with backtracking
+	Vector<string> small;
+	small.push_back("RRYY");
+	small.push_back("RRBU");
+	small.push_back("RRBB");
+	small.push_back("RRBO");
+	small.push_back("RRBY");
+	TreeNode* btNode1 = new TreeNode();
+	bool found1 = backTrack(btNode1, small, lengthOfCode);
+	if (found1 == true) {
+		cout << "Backtracking found a solution for small number of remaining codes." << endl;
+	}
+	else {
+		cout << "Backtracking did not find solution for small number of codes" << endl;
+	};
+	if (btNode1->guess != "") {
+		cout << "Backtracking has a guess: " << btNode1->guess << endl;
+	}
+	else {
+		cout << "Backtracking has no guess" << endl;
+	};
+	if (btNode1->children.size() > 0) {
+		cout << "Backtracking tree has children" << endl;
+	}
+	else {
+		cout << "Backtracking tree has no children" << endl;
+	};
+	delete btNode1;
+
+
+	// testing backtracking when there is no codes remaining
+	Vector<string> empty;
+	TreeNode* btNode2 = new TreeNode();
+	bool found2 = backTrack(btNode2, empty, lengthOfCode);
+	if (found2 == false) {
+		cout << "Backtracking returned false for no codes (good)" << endl;
+	}
+	else {
+		cout << "Backtracking failed when no codes remained (bad)" << endl;
+	};
+	delete btNode2;
+
+	
+	// testing backtracking when one code remains
+	Vector<string> oneCode(1);
+	oneCode.push_back("RGBY");
+	TreeNode* btNode3 = new TreeNode();
+	backTrack(btNode3, oneCode, lengthOfCode);
+	if (btNode3->guess == "RGBY") {
+		cout << "Backtracking correctly got the last code" << endl;
+	}
+	else {
+		cout << "Backtracking did not get the last code" << endl;
+	};
+	delete btNode3;
+
+
+	// testing backtracking when depth is 0
+	Vector<string> depth0;
+	depth0.push_back("RGBY");
+	depth0.push_back("RRRR");
+	TreeNode* btNode4 = new TreeNode();
+	bool found4 = backTrack(btNode4, depth0, 0);
+	if (found4 == false) {
+		cout << "Backtracking returned false when depth was 0 (good)" << endl;
+	}
+	else {
+		cout << "Backtracking failed when depth was 0" << endl;
+	};
+	delete btNode4;
 };
