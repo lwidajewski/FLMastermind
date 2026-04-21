@@ -16,7 +16,7 @@ Solver::Solver() {
 // creates all 1296 codes using recursion (e.g. RRRR to OOOO and stuff to help with solving)
 // could have done like 4 for loops but I didn't like the way it looked
 void Solver::generateCodes(Vector<string>& codes, string current) {
-	if (current.size() == length) {
+	if (current.size() == lengthOfCode) {
 		codes.push_back(current);
 		return;
 	}
@@ -33,7 +33,7 @@ GuessFeedback Solver::getFeedback(std::string guess, std::string answer) {
 	GuessFeedback fb; // stores # of exact and partial matches
 
 	// count exact - length = 4 since that is how long the code being guessed is
-	for (int i = 0; i < length; i++) {
+	for (int i = 0; i < lengthOfCode; i++) {
 		if (guess[i] == answer[i]) {
 			fb.exact++;
 		};
@@ -44,7 +44,7 @@ GuessFeedback Solver::getFeedback(std::string guess, std::string answer) {
 		int countGuess = 0;
 		int countAnswer = 0;
 
-		for (int j = 0; j < length; j++) {
+		for (int j = 0; j < lengthOfCode; j++) {
 			if (guess[j] == colors[i]) {
 				countGuess++;
 			};
@@ -155,7 +155,7 @@ TreeNode* Solver::buildTree(Vector<string>& remaining, int depth) {
 	// go through each feedback
 	for (int i = 0; i < fbs.size(); i++) {
 		// check for correct answer (4,0) --> 4 exact, 0 partial
-		if (fbs.at(i).exact == length) {
+		if (fbs.at(i).exact == lengthOfCode) {
 			continue;
 		};
 
@@ -169,6 +169,28 @@ TreeNode* Solver::buildTree(Vector<string>& remaining, int depth) {
 		};
 	};
 	return node;
+};
+
+int Solver::intInputCheck(int min, int max) {
+	int x;
+
+	while (true) {
+		cin >> x;
+
+		// checks for letters and special characters
+		if (cin.fail()) {
+			cout << "Invalid input. Enter a number: ";
+			cin.clear();
+			cin.ignore(10000, '\n');
+		}
+		// checks if input is greater than 4 or less than 0
+		else if (x < min || x > max) {
+			cout << "Invalid input. Enter a number between " << min << " and " << max << ": ";
+		}
+		else {
+			return x;
+		};
+	};
 };
 
 // ---------- UI/Main loop to solve a code ----------
@@ -186,13 +208,17 @@ void Solver::solve() {
 	// receive feedback from user about how many exact and partial matches there are
 	int exact, partial;
 	cout << "Enter exact matches: ";
-	cin >> exact;
+	exact = intInputCheck(0, 4);
 	cout << "Enter partial matches: ";
-	cin >> partial;
+	partial = intInputCheck(0, 4);
 
 	// check if everything was exact --> if it was the code was solved
-	if (exact == length) {
+	if (exact == lengthOfCode || exact == 3 && partial == 1) {
+		if (partial == 1) {
+			cout << "\nThe combination of 3 exact and 1 partial matches mean the code was solved!" << endl;
+		};
 		cout << "\nSolved! The code was " << firstGuess << "!" << endl;
+		system("pause");
 		return;
 	};
 
@@ -214,7 +240,7 @@ void Solver::solve() {
 
 	// build tree with remaining codes after first guess
 	cout << "Building decision tree..." << endl;
-	TreeNode* root = buildTree(remaining, length);
+	TreeNode* root = buildTree(remaining, lengthOfCode);
 	tree.setRoot(root);
 	cout << "Tree built! Let's solve." << endl;
 
@@ -227,12 +253,16 @@ void Solver::solve() {
 		cout << "Move " << moveCount++ << " - My guess: " << current->guess << endl;
 
 		cout << "Enter exact matches: ";
-		cin >> exact;
+		exact = intInputCheck(0, 4);
 		cout << "Enter partial matches: ";
-		cin >> partial;
+		partial = intInputCheck(0, 4);
 
-		if (exact == length) {
+		if (exact == lengthOfCode || exact == 3 && partial == 1) {
+			if (partial == 1) {
+				cout << "\nThe combination of 3 exact and 1 partial matches mean the code was solved!" << endl;
+			};
 			cout << "\nSolved! The code was " << current->guess << "!" << endl;
+			system("pause");
 			return;
 		};
 
@@ -258,8 +288,11 @@ void Solver::solve() {
 
 // ---------- testing ----------
 void Solver::test() {
+	cout << "Solver tests" << endl;
+	cout << "------------------------" << endl;
 	//testGetFeedback();
 	//testGenerateCodes();
+	system("pause");
 };
 
 // yes I inputted codes manually to check

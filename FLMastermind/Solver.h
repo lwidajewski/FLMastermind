@@ -8,7 +8,7 @@
 
 class Solver {
 	private:
-		const int length = 4; // length of a code e.g. RRRR
+		const int lengthOfCode = 4; // length of a code e.g. RRRR
 		const int numColors = 6;
 		const int totalCodes = 1296;
 		const char colors[6] = { 'R', 'G', 'B', 'Y', 'U', 'O' }; // colors that can be guessed for a code
@@ -29,6 +29,9 @@ class Solver {
 
 		// builds the tree --> tree is built after the first guess
 		TreeNode* buildTree(Vector<std::string>& remaining, int depth);
+
+		// checks exact/partial matches and verifies input
+		int intInputCheck(int min, int max);
 
 
 		// --- testing stuff ---
