@@ -27,6 +27,10 @@ class Solver {
 		// greedy approach implementation --> see solver.cpp for more explanation
 		std::string	greedyPick(Vector<std::string>& remaining);
 
+		bool backTrack(TreeNode* node, Vector<std::string>& remaining, int depth);
+		int maxDepth(TreeNode* node);
+		bool isOptimal(TreeNode* node, int depthLimit);
+
 		// builds the tree --> tree is built after the first guess
 		TreeNode* buildTree(Vector<std::string>& remaining, int depth);
 
@@ -37,6 +41,7 @@ class Solver {
 		// --- testing stuff ---
 		void testGetFeedback();
 		void testGenerateCodes();
+		void testBacktracking();
 
 	public:
 		Solver();
