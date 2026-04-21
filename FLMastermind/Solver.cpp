@@ -438,7 +438,7 @@ void Solver::test() {
 	cout << "------------------------" << endl;
 	//testGetFeedback();
 	//testGenerateCodes();
-	testBacktracking();
+	//testBacktracking();
 	system("pause");
 };
 
@@ -571,4 +571,91 @@ void Solver::testBacktracking() {
 		cout << "Backtracking failed when depth was 0" << endl;
 	};
 	delete btNode4;
+
+
+	// tested if backtracking reduces number of remaining codes
+	Vector<string> reduce;
+	reduce.push_back("RRRR");
+	reduce.push_back("RRGG");
+	reduce.push_back("RRBB");
+	reduce.push_back("RROO");
+	TreeNode* btNode5 = new TreeNode();
+	bool found5 = backTrack(btNode5, reduce, lengthOfCode);
+
+	Vector<GuessFeedback> fbs(14);
+	Vector<Vector<string>> buckets(14);
+	buildBuckets(btNode5->guess, reduce, fbs, buckets);
+
+	bool reduced = true;
+	for (int i = 0; i < buckets.size(); i++) {
+		if (buckets.at(i).size() == reduce.size()) {
+			reduced = false;
+		};
+	};
+
+	if (reduced == true) {
+		cout << "Backtracking reduced number of remaining codes" << endl;
+	}
+	else {
+		cout << "Backtracking failed to reduce remaining codes" << endl;
+	};
+	delete btNode5;
+
+
+	// tested if backtracking had duplicate children in tree
+	TreeNode* btNode6 = new TreeNode();
+	backTrack(btNode6, small, lengthOfCode);
+	bool noDup = true;
+
+	for (int i = 0; i < btNode6->children.size(); i++) {
+		for (int j = i + 1; j < btNode6->children.size(); j++) {
+			if (btNode6->children.at(i) == btNode6->children.at(j)) {
+				noDup = false;
+			};
+		};
+	};
+
+	if (noDup == true) {
+		cout << "Backtracking has no duplicate children" << endl;
+	}
+	else {
+		cout << "Backtracking has duplicate children" << endl;
+	};
+	delete btNode6;
+
+
+	// tested if backtracking actually reduces depth
+	TreeNode* btNode7 = new TreeNode();
+	backTrack(btNode7, small, lengthOfCode);
+
+	int depth = maxDepth(btNode7);
+
+	if (depth <= lengthOfCode) {
+		cout << "Depth is correct" << endl;
+	}
+	else {
+		cout << "Depth is too large" << endl;
+	};
+	delete btNode7;
+
+
+	/*   ----- Commented out cause it can take awhile just in case this function gets uncommented later
+	// tested if backtracking can handle a larger input size close to its max
+	Vector<string> medium;
+
+	for (int i = 0; i < 49; i++) {
+		medium.push_back(allCodes.at(i));
+	};
+
+	TreeNode* btNode8 = new TreeNode();
+	bool found6 = backTrack(btNode8, medium, lengthOfCode);
+
+	if (found6 == true) {
+		cout << "Backtracking handled an almost max input size" << endl;
+	}
+	else {
+		cout << "Backtracking did not handle a larger input size" << endl;
+	};
+	delete btNode8;
+	*/
 };
