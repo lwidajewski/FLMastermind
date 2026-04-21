@@ -37,6 +37,9 @@ class Solver {
 		// checks exact/partial matches and verifies input
 		int intInputCheck(int min, int max);
 
+		// feedback if code was solved
+		bool codeSolvedFeedback(int exact, int partial, std::string guess);
+
 
 		// --- testing stuff ---
 		void testGetFeedback();
