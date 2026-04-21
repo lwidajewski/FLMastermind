@@ -308,6 +308,22 @@ int Solver::intInputCheck(int min, int max) {
 	};
 };
 
+bool Solver::codeSolvedFeedback(int exact, int partial, string guess) {
+	// check if everything was exact --> if it was the code was solved
+	if (exact == lengthOfCode || exact == 3 && partial == 1) {
+		if (exact == lengthOfCode && partial > 0) {
+			cout << "\nPartial matches is not correct, but the code was solved with 4 exact matches!" << endl;
+		};
+		if (partial == 1) {
+			cout << "\nThe combination of 3 exact and 1 partial matches mean the code was solved!" << endl;
+		};
+		cout << "\nSolved! The code was " << guess << "!" << endl;
+		system("pause");
+		return true;
+	};
+	return false;
+};
+
 // ---------- UI/Main loop to solve a code ----------
 // more of an interactive solve than I intended but I kind of like it
 void Solver::solve() {
@@ -328,14 +344,8 @@ void Solver::solve() {
 	cout << "Enter partial matches: ";
 	partial = intInputCheck(0, 4);
 
-	// check if everything was exact --> if it was the code was solved
-	if (exact == lengthOfCode || exact == 3 && partial == 1) {
-		if (partial == 1) {
-			cout << "\nThe combination of 3 exact and 1 partial matches mean the code was solved!" << endl;
-		};
-		cout << "\nSolved! The code was " << firstGuess << "!" << endl;
-		system("pause");
-		return;
+	if (codeSolvedFeedback(exact, partial, firstGuess)) {
+		return; // code was solved
 	};
 
 	// filter remaining based on first guess feedback
@@ -358,7 +368,7 @@ void Solver::solve() {
 	cout << "\nBuilding greedy tree..." << endl;
 	TreeNode* root = buildTree(remaining, lengthOfCode);
 	tree.setRoot(root);
-	cout << "Greedy tree built. Worst case moves: " << maxDepth(root) + 2 << endl << endl;
+	cout << "Greedy tree built." << endl << endl;
 
 	// navigate tree for remaining guesses
 	TreeNode* current = tree.getRoot();
@@ -373,14 +383,8 @@ void Solver::solve() {
 		cout << "Enter partial matches: ";
 		partial = intInputCheck(0, 4);
 
-		// special case where user entered matches wrong and ended up solving without realizing
-		if (exact == lengthOfCode || exact == 3 && partial == 1) {
-			if (partial == 1) {
-				cout << "\nThe combination of 3 exact and 1 partial matches mean the code was solved!" << endl;
-			};
-			cout << "\nSolved! The code was " << current->guess << "!" << endl;
-			system("pause");
-			return;
+		if (codeSolvedFeedback(exact, partial, current->guess)) {
+			return; // code was solved
 		};
 
 		// find correct part of the tree to go down based on the feedback from user
